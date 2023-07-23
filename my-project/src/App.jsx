@@ -8,38 +8,57 @@ const App = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortField, setSortField] = useState(null);
   const [sortOrder, setSortOrder] = useState('asc');
+  const [deletedTransactions, setDeletedTransactions] = useState([]);
 
   useEffect(() => {
-    // Fetch data from the local server (JSON server)
-    fetch('http://localhost:3000/transactions') // Updated URL to use JSON server at port 3000
-      .then((response) => response.json())
-      .then((data) => setTransactions(data))
-      .catch((error) => console.error('Error fetching data:', error));
+    fetchData();
   }, []);
 
+  const fetchData = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/transactions');
+      if (!response.ok) {
+        throw new Error('Failed to fetch data');
+      }
+      const data = await response.json();
+      setTransactions(data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
   const addTransaction = (newTransaction) => {
-    // Add the new transaction to the transactions list
     setTransactions([...transactions, newTransaction]);
   };
 
   const deleteTransaction = (id) => {
-    // Delete the transaction from the server (JSON server)
-    fetch(`http://localhost:3000/transactions/${id}`, {
-      method: 'DELETE',
-    })
-      .then(() => {
-        // Update the local state after successful deletion
-        setTransactions(transactions.filter((transaction) => transaction.id !== id));
-      })
-      .catch((error) => console.error('Error deleting transaction:', error));
+    const transactionToDelete = transactions.find((transaction) => transaction.id === id);
+    if (transactionToDelete) {
+      setDeletedTransactions([
+        ...deletedTransactions,
+        { transaction: transactionToDelete, originalIndex: transactions.indexOf(transactionToDelete) },
+      ]);
+      setTransactions(transactions.filter((transaction) => transaction.id !== id));
+    }
+  };
+
+  const undoDelete = (id) => {
+    const deletedTransaction = deletedTransactions.find((transaction) => transaction.transaction.id === id);
+    if (deletedTransaction) {
+      const { transaction, originalIndex } = deletedTransaction;
+      if (!transactions.some((item) => item.id === id)) {
+        const newTransactions = [...transactions];
+        newTransactions.splice(originalIndex, 0, transaction);
+        setTransactions(newTransactions);
+      }
+      setDeletedTransactions(deletedTransactions.filter((item) => item.transaction.id !== id));
+    }
   };
 
   const sortTransactions = (field) => {
     if (field === sortField) {
-      // If already sorted by this field, reverse the order
       setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
     } else {
-      // Otherwise, sort in ascending order
       setSortField(field);
       setSortOrder('asc');
     }
@@ -56,6 +75,8 @@ const App = () => {
         sortOrder={sortOrder}
         onSort={sortTransactions}
         onDelete={deleteTransaction}
+        onUndoDelete={undoDelete}
+        deletedTransactions={deletedTransactions}
       />
       <TransactionForm addTransaction={addTransaction} />
     </div>
