@@ -1,7 +1,6 @@
-// TransactionTable.jsx
 import React from 'react';
 
-const TransactionTable = ({ transactions, onSort, onDelete, onUndoDelete, deletedTransactions }) => {
+const TransactionTable = ({ transactions, onSort, onDelete }) => {
   return (
     <table>
       <thead>
@@ -29,11 +28,7 @@ const TransactionTable = ({ transactions, onSort, onDelete, onUndoDelete, delete
             <td>{transaction.category}</td>
             <td>{transaction.amount}</td>
             <td>
-              {transaction.isDeleted ? (
-                <button onClick={() => onUndoDelete(transaction.id)}>Undo</button>
-              ) : (
-                <button onClick={() => onDelete(transaction.id)}>Delete</button>
-              )}
+              <button onClick={() => onDelete(transaction.id)}>Delete</button>
             </td>
           </tr>
         ))}
