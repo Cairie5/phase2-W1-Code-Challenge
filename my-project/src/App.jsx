@@ -4,26 +4,39 @@ import TransactionList from './TransactionList';
 import TransactionForm from './TransactionForm';
 
 const App = () => {
+  // State variables to manage transactions, search term, sorting, and deleted transactions
   const [transactions, setTransactions] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortField, setSortField] = useState(null);
   const [sortOrder, setSortOrder] = useState('asc');
 
+  // Fetch data from the local server (JSON server) on component mount
   useEffect(() => {
-    // Fetch data from the local server (JSON server)
-    fetch('http://localhost:3000/transactions') // Updated URL to use JSON server at port 3000
-      .then((response) => response.json())
-      .then((data) => setTransactions(data))
-      .catch((error) => console.error('Error fetching data:', error));
+    fetchData();
   }, []);
 
+  // Fetch data from the JSON server
+  const fetchData = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/transactions');
+      if (!response.ok) {
+        throw new Error('Failed to fetch data');
+      }
+      const data = await response.json();
+      setTransactions(data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  // Add a new transaction to the transactions list
   const addTransaction = (newTransaction) => {
-    // Add the new transaction to the transactions list
     setTransactions([...transactions, newTransaction]);
   };
 
+  // Delete a transaction by ID
   const deleteTransaction = (id) => {
-    // Delete the transaction from the server (JSON server)
+    // Delete the transaction from the JSON server
     fetch(`http://localhost:3000/transactions/${id}`, {
       method: 'DELETE',
     })
@@ -34,9 +47,10 @@ const App = () => {
       .catch((error) => console.error('Error deleting transaction:', error));
   };
 
+  // Sort transactions based on a field
   const sortTransactions = (field) => {
     if (field === sortField) {
-      // If already sorted by this field, reverse the order
+      // If already sorted by this field, reverse the sort order
       setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
     } else {
       // Otherwise, sort in ascending order
