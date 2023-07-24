@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import TransactionList from './TransactionList';
 import TransactionForm from './TransactionForm';
+import './App.css';
 
 const App = () => {
   // State variables to manage transactions, search term, sorting, and deleted transactions

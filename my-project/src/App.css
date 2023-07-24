@@ -40,3 +40,43 @@
 .read-the-docs {
   color: #888;
 }
+tr td{
+  padding: 8px;
+  border: 1px solid #ddd;
+  text-align: left;
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+/* Add this rule to make the "Delete" button red */
+button {
+  background-color: whitesmoke;
+  color: red;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 20px;
+  cursor: pointer;
+  border-radius: 4px;
+  border-radius: 13px;
+}
+
+/* Add this rule to make the text size larger */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+td {
+  font-size: 18px; /* You can adjust the font size as per your preference */
+}
+
+form {
+  background-color: lightcoral;
+  padding: 10px;
+  border-radius: 10px;
+  justify-content: space-evenly;
+}
