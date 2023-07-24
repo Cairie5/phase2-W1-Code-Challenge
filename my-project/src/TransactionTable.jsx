@@ -1,10 +1,13 @@
+// TransactionTable.jsx
 import React from 'react';
 
+// TransactionTable component to display the table of transactions
 const TransactionTable = ({ transactions, onSort, onDelete }) => {
   return (
     <table>
       <thead>
         <tr>
+          {/* Column headers with buttons to trigger sorting */}
           <th>
             <button onClick={() => onSort('date')}>Date</button>
           </th>
@@ -21,13 +24,16 @@ const TransactionTable = ({ transactions, onSort, onDelete }) => {
         </tr>
       </thead>
       <tbody>
+        {/* Map through transactions to display each row */}
         {transactions.map((transaction) => (
           <tr key={transaction.id} className={transaction.isDeleted ? 'deleted' : ''}>
+            {/* Display individual transaction data in each cell */}
             <td>{transaction.date}</td>
             <td>{transaction.description}</td>
             <td>{transaction.category}</td>
             <td>{transaction.amount}</td>
             <td>
+              {/* Button to trigger the onDelete function when clicked */}
               <button onClick={() => onDelete(transaction.id)}>Delete</button>
             </td>
           </tr>
